@@ -1,10 +1,12 @@
 <template>
-  <div class="login">登录页面</div>
+  <div class="404">
+    <h1>404 Not Found.</h1>
+  </div>
 </template>
 
 <script>
 export default {
-  name: 'LogIn'
+  name: 'NotFound'
 }
 </script>
 
