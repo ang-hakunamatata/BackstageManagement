@@ -7,7 +7,9 @@
       <!-- <AppAside /> -->
     </el-aside>
     <el-container>
-      <el-header>Header</el-header>
+      <el-header>
+        <app-header></app-header>
+      </el-header>
       <el-main>
           <!-- 设置子路由出口 -->
           <router-view></router-view>
@@ -19,11 +21,14 @@
 <script>
 // 引入侧边栏
 import AppAside from './components/AppAside.vue'
+// 引入头部
+import AppHeader from './components/AppHeader.vue'
 
 export default {
   name: 'Layout',
   components: {
-    AppAside
+    AppAside,
+    AppHeader
   }
 }
 </script>
