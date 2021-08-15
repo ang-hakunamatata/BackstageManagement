@@ -1,5 +1,4 @@
 <template>
-
   <el-container>
     <el-aside width="200px">
       <!-- 侧边栏组件 -->
@@ -37,4 +36,16 @@ export default {
 .el-container {
   height: 100vh;
 }
+
+ .el-aside {
+    background-color: #d3dce6;
+  }
+
+  .el-header {
+    background-color: #fff;
+  }
+
+  .el-main {
+    background-color: #e9eef3;
+  }
 </style>
