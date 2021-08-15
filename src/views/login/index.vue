@@ -25,6 +25,7 @@
       <el-form-item>
         <el-button
           type="primary"
+          :loading="isLoginLoading"
           @click="onSubmit"
         >登录</el-button>
       </el-form-item>
@@ -55,7 +56,9 @@ export default {
           { required: true, message: '请输入密码', trigger: 'blur' },
           { min: 6, max: 18, message: '密码长度为 6 到 18 位', trigger: 'blur' }
         ]
-      }
+      },
+      // 用于存储加载状态
+      isLoginLoading: false
     }
   },
   methods: {
@@ -67,6 +70,7 @@ export default {
         await this.$refs.form.validate()
         // 2. 发送请求
         // console.log(qs.stringify(this.form))
+        this.isLoginLoading = true
         const { data } = await request({
           method: 'POST',
           url: '/front/user/login',
@@ -78,6 +82,7 @@ export default {
           //   password: this.form.password
           // }
         })
+        this.isLoginLoading = false
         // console.log(this)
         if (data.state === 1) {
           this.$router.push({
