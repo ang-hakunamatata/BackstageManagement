@@ -67,7 +67,7 @@ export default {
         await this.$refs.form.validate()
         // 2. 发送请求
         // console.log(qs.stringify(this.form))
-        request({
+        const { data } = await request({
           method: 'POST',
           url: '/front/user/login',
           // headers: { 'content-type': 'application/x-www-form-urlencoded' },
@@ -78,12 +78,21 @@ export default {
           //   password: this.form.password
           // }
         })
+        // console.log(this)
+        if (data.state === 1) {
+          this.$router.push({
+            name: 'home'
+          })
+          this.$message.success('登录成功')
+        } else {
+          this.$message.error('登录失败')
+        }
         // console.log('通过校验')
       } catch (err) {
         // 设置校验失败后的功能（提示）
         console.log('没有通过校验')
       }
-      console.log('点击提交!')
+      // console.log('点击提交!')
     }
   }
 }
