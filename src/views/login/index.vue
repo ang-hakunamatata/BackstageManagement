@@ -33,14 +33,17 @@
 </template>
 
 <script>
+import request from '@/utils/request.js'
+import qs from 'qs'
+
 export default {
   name: 'LogIn',
   data () {
     return {
       // 存储表单数据对象
       form: {
-        phone: '',
-        password: ''
+        phone: '18201288771',
+        password: '111111'
       },
       // 用于设置表单校验规则
       rules: {
@@ -56,11 +59,26 @@ export default {
     }
   },
   methods: {
+    // 登录功能
     async onSubmit () {
-      console.log(this.$refs.form)
+      // console.log(this.$refs.form)
       try {
+        // 1. 设置验证
         await this.$refs.form.validate()
-        console.log('通过校验')
+        // 2. 发送请求
+        // console.log(qs.stringify(this.form))
+        request({
+          method: 'POST',
+          url: '/front/user/login',
+          // headers: { 'content-type': 'application/x-www-form-urlencoded' },
+          // urlencoded格式  名=值&名=值
+          data: qs.stringify(this.form)
+          // data: {
+          //   phone: this.form.phone,
+          //   password: this.form.password
+          // }
+        })
+        // console.log('通过校验')
       } catch (err) {
         // 设置校验失败后的功能（提示）
         console.log('没有通过校验')
