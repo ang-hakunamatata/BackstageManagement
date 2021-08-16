@@ -34,8 +34,11 @@
 </template>
 
 <script>
-import request from '@/utils/request.js'
-import qs from 'qs'
+// import request from '@/utils/request.js'
+// import qs from 'qs'
+
+// 引入封装的接口功能组件
+import { login } from '@/services/user.js'
 
 export default {
   name: 'LogIn',
@@ -65,23 +68,39 @@ export default {
     // 登录功能
     async onSubmit () {
       // console.log(this.$refs.form)
+      // this.$store.commit('jia', {
+      //   count: 5,
+      //   delay: 2000
+      // })
+      // this.$store.commit('jia', {
+      //   count: 2,
+      //   delay: 1000
+      // })
+      // this.$store.commit('jia', {
+      //   count: 1,
+      //   delay: 500
+      // })
+      this.$store.dispatch('jiaHandle', { count: 5, delay: 2000 })
+      this.$store.dispatch('jiaHandle', { count: 2, delay: 1000 })
+      this.$store.dispatch('jiaHandle', { count: 1, delay: 500 })
       try {
         // 1. 设置验证
         await this.$refs.form.validate()
         // 2. 发送请求
         // console.log(qs.stringify(this.form))
         this.isLoginLoading = true
-        const { data } = await request({
-          method: 'POST',
-          url: '/front/user/login',
-          // headers: { 'content-type': 'application/x-www-form-urlencoded' },
-          // urlencoded格式  名=值&名=值
-          data: qs.stringify(this.form)
-          // data: {
-          //   phone: this.form.phone,
-          //   password: this.form.password
-          // }
-        })
+        // const { data } = await request({
+        //   method: 'POST',
+        //   url: '/front/user/login',
+        //   // headers: { 'content-type': 'application/x-www-form-urlencoded' },
+        //   // urlencoded格式  名=值&名=值
+        //   data: qs.stringify(this.form)
+        //   // data: {
+        //   //   phone: this.form.phone,
+        //   //   password: this.form.password
+        //   // }
+        // })
+        const { data } = await login(this.form)
         this.isLoginLoading = false
         // console.log(this)
         if (data.state === 1) {

@@ -5,10 +5,23 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    count: 0
   },
   mutations: {
+    jia (state, payload) {
+      state.count = payload.count
+      // setTimeout(() => {
+      //   state.count = payload.count
+      // }, payload.delay)
+    }
   },
   actions: {
+    jiaHandle (context, payload) {
+      setTimeout(() => {
+        // context 与  store 功能完全相同
+        context.commit('jia', payload.count)
+      }, payload.delay)
+    }
   },
   modules: {
   }
