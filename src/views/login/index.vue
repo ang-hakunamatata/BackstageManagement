@@ -69,7 +69,9 @@ export default {
     async onSubmit () {
       // console.log(this.$refs.form)
       try {
+        // console.log(this.$refs)
         // console.log(this.$refs.form.validate())
+        console.log(login())
         // console.log(login(this.form))
         // 1. 设置验证
         await this.$refs.form.validate()
@@ -91,11 +93,11 @@ export default {
         this.isLoginLoading = false
         // console.log(this)
         if (data.state === 1) {
-          this.$router.push({
-            name: 'home'
-          })
           this.$message.success('登录成功')
+          // 用户信息存储到 Vuex中
           this.$store.commit('setUser', data.content)
+          // 根据可能存储的 redirect 数据进行跳转设置
+          this.$router.push(this.$route.query.redirect || '/')
         } else {
           this.$message.error('登录失败')
         }
