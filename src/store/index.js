@@ -5,23 +5,17 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    count: 0
+    user: JSON.parse(window.localStorage.getItem('user') || null)
   },
   mutations: {
-    jia (state, payload) {
-      state.count = payload.count
-      // setTimeout(() => {
-      //   state.count = payload.count
-      // }, payload.delay)
+    setUser (state, payload) {
+      // 将JSON数据转换成对象数据
+      state.user = JSON.parse(payload)
+      // 本地存储vuex数据
+      window.localStorage.setItem('user', payload)
     }
   },
   actions: {
-    jiaHandle (context, payload) {
-      setTimeout(() => {
-        // context 与  store 功能完全相同
-        context.commit('jia', payload.count)
-      }, payload.delay)
-    }
   },
   modules: {
   }

@@ -68,22 +68,9 @@ export default {
     // 登录功能
     async onSubmit () {
       // console.log(this.$refs.form)
-      // this.$store.commit('jia', {
-      //   count: 5,
-      //   delay: 2000
-      // })
-      // this.$store.commit('jia', {
-      //   count: 2,
-      //   delay: 1000
-      // })
-      // this.$store.commit('jia', {
-      //   count: 1,
-      //   delay: 500
-      // })
-      this.$store.dispatch('jiaHandle', { count: 5, delay: 2000 })
-      this.$store.dispatch('jiaHandle', { count: 2, delay: 1000 })
-      this.$store.dispatch('jiaHandle', { count: 1, delay: 500 })
       try {
+        // console.log(this.$refs.form.validate())
+        // console.log(login(this.form))
         // 1. 设置验证
         await this.$refs.form.validate()
         // 2. 发送请求
@@ -108,6 +95,7 @@ export default {
             name: 'home'
           })
           this.$message.success('登录成功')
+          this.$store.commit('setUser', data.content)
         } else {
           this.$message.error('登录失败')
         }
