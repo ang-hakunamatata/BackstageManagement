@@ -1,8 +1,6 @@
 import request from '@/utils/request.js'
 import qs from 'qs'
 
-import store from '@/store/index.js'
-
 // 用户登录接口
 export const login = (data) => {
   return request({
@@ -16,9 +14,6 @@ export const login = (data) => {
 export const getUserInfo = () => {
   return request({
     method: 'GET',
-    url: '/front/user/getInfo',
-    headers: {
-      Authorization: store.state.user.access_token
-    }
+    url: '/front/user/getInfo'
   })
 }
