@@ -18,7 +18,10 @@
         </span>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item>{{ userInfo.userName }}</el-dropdown-item>
-          <el-dropdown-item divided>退出</el-dropdown-item>
+          <el-dropdown-item
+            @click.native="handLogout"
+            divided
+          >退出</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
@@ -46,6 +49,27 @@ export default {
       const { data } = await getUserInfo()
       // console.log(data)
       this.userInfo = data.content
+    },
+    handLogout () {
+      this.$confirm('是否退出登录', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        // 清除 vuex 中的用户信息
+        this.$store.commit('setUser', null)
+        // 跳转到登录页面
+        this.$router.push({ name: 'login' })
+        this.$message({
+          type: 'success',
+          message: '退出成功!'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '取消退出'
+        })
+      })
     }
   }
 }
