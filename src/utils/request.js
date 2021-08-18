@@ -4,7 +4,9 @@ import axios from 'axios'
 import store from '@/store/index.js'
 // 引入Message组件
 import { Message } from 'element-ui'
+import router from '../router'
 
+import qs from 'qs'
 // cerete 创建 axios 实例
 const request = axios.create({
   timeout: 2000
@@ -40,17 +42,58 @@ request.interceptors.response.use(function (response) {
   return response
 }, function (error) {
   // console.log(error)
-  // console.dir(error)
+  console.dir(error)
   if (error.response) {
     // 请求发送成功，响应接收完毕，但状态码为失败的情况
-    // 1. 判断失败的状态码情况（主要处理 401 的情况）
+    //  判断失败的状态码情况（主要处理 401 的情况）
     const { status } = error.response
     let errorMessage = ''
     if (status === 400) {
       errorMessage = '请求参数错误'
     } else if (status === 401) {
-      // 2.Token 无效（过期）处理
-      errorMessage = 'Token 过期'
+      // Token 无效（过期）处理
+      // 1.无Token信息
+      if (!store.state.user) {
+        // 跳转到登录页
+        router.push({
+          name: 'login',
+          qurey: {
+            redirect: router.currentRoute.fullPath
+          }
+        })
+        return Promise.reject(error)
+      }
+      // 2.Token无效（错误Token，过期Token）
+      // - 发送请求，获取新的 acess_token
+      return request({
+        method: 'POST',
+        url: '/front/user/refresh_token',
+        data: qs.stringify({
+          refreshtoken: store.state.user.refresh_token
+        })
+      }).then(res => {
+        // 刷新Token失败
+        if (res.data.state !== 1) {
+          // 清除无效的用户信息
+          store.commit('setUser', null)
+          router.push({
+            name: 'login',
+            query: {
+              redirect: router.currentRoute.fullPath
+            }
+          })
+          return Promise.reject(error)
+        }
+        // 刷新 token 成功
+        //  - 将刷新后的token数据存储到vuex中
+        store.commit('setUser', res.data.content)
+        //  - 重新发送失败的请求
+        //  - error.config本次失败的请求的配置对象
+        return request(error.config)
+        // console.log(res)
+      }).catch(error => {
+        console.log(error)
+      })
     } else if (status === 403) {
       errorMessage = '没有权限，请联系管理员'
     } else if (status === 404) {
