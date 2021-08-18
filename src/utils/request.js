@@ -35,6 +35,21 @@ request.interceptors.request.use((config) => {
   return config
 })
 
+function redirectLogin () {
+  // 跳转到登录页
+  router.push({
+    name: 'login',
+    query: {
+      redirect: router.currentRoute.fullPath
+    }
+  })
+}
+
+// 存储是否正在更新 Token 的状态
+let isRefreshing = false
+// 存储因为等待 Token 刷新而挂起的请求
+let requests = []
+
 // 响应拦截器
 request.interceptors.response.use(function (response) {
   // 状态码 2xx 会执行这里
@@ -55,14 +70,19 @@ request.interceptors.response.use(function (response) {
       // 1.无Token信息
       if (!store.state.user) {
         // 跳转到登录页
-        router.push({
-          name: 'login',
-          qurey: {
-            redirect: router.currentRoute.fullPath
-          }
-        })
+        redirectLogin()
         return Promise.reject(error)
       }
+      // 检测是否已经存在了正在刷新 Token 的请求
+      if (isRefreshing) {
+        // 将当前失败的请求，存储到请求列表中
+        // token更新完毕后遍历统一发送
+        return requests.push(() => {
+          // 当前函数调用后，会自动发送本次失败的请求
+          request(error.config)
+        })
+      }
+      isRefreshing = true
       // 2.Token无效（错误Token，过期Token）
       // - 发送请求，获取新的 acess_token
       return request({
@@ -76,23 +96,26 @@ request.interceptors.response.use(function (response) {
         if (res.data.state !== 1) {
           // 清除无效的用户信息
           store.commit('setUser', null)
-          router.push({
-            name: 'login',
-            query: {
-              redirect: router.currentRoute.fullPath
-            }
-          })
+          redirectLogin()
           return Promise.reject(error)
         }
         // 刷新 token 成功
         //  - 将刷新后的token数据存储到vuex中
         store.commit('setUser', res.data.content)
-        //  - 重新发送失败的请求
+        //  - 重新发送失败的请求（根据 requests 发送所有失败的请求）
         //  - error.config本次失败的请求的配置对象
-        return request(error.config)
+        // return request(err.config)
+        requests.forEach(callback => callback())
+        //  - 发送完毕，清除 requests 内容即可
+        requests = []
         // console.log(res)
+        return request(error.config)
       }).catch(error => {
         console.log(error)
+      }).finally(() => {
+        // 请求发送完毕，响应处理完毕，将刷新状态更改为 false 即可
+        // 无论成功失败 finally 都会执行
+        isRefreshing = false
       })
     } else if (status === 403) {
       errorMessage = '没有权限，请联系管理员'
