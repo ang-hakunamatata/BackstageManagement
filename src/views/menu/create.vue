@@ -50,7 +50,7 @@
 
 <script>
 // 引入获取菜单列表功能
-import { getEditMenuInfo } from '@/services/menu.js'
+import { getEditMenuInfo, saveOrUpdate } from '@/services/menu.js'
 
 export default {
   name: 'MenuCreate',
@@ -75,8 +75,14 @@ export default {
     this.loadMenuInfo()
   },
   methods: {
-    onSubmit () {
-      console.log('submit!')
+    async onSubmit () {
+      const { data } = await saveOrUpdate(this.form)
+      if (data.code === '000000') {
+        this.$message.success('提交成功')
+        this.$router.push({
+          name: 'menu'
+        })
+      }
     },
     async loadMenuInfo () {
       console.log(getEditMenuInfo())

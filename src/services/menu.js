@@ -11,3 +11,12 @@ export const getEditMenuInfo = (id = -1) => {
     }
   })
 }
+
+// 提交更新表单
+export const saveOrUpdate = (data) => {
+  return request({
+    method: 'POST',
+    url: '/boss/menu/saveOrUpdate',
+    data
+  })
+}
