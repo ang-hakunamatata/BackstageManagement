@@ -13,8 +13,15 @@
       </el-form-item>
       <el-form-item label="上级菜单">
         <el-select v-model="form.parentId" placeholder="请选择上级菜单">
-          <el-option label="区域一" value="shanghai"></el-option>
-          <el-option label="区域二" value="beijing"></el-option>
+          <!-- 无上级菜单 -->
+          <el-option label="无上级菜单" :value="-1"></el-option>
+          <!-- 选择一级菜单 -->
+          <el-option
+            v-for="item in parentMenuList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          ></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="描述">
@@ -42,6 +49,9 @@
 </template>
 
 <script>
+// 引入获取菜单列表功能
+import { getEditMenuInfo } from '@/services/menu.js'
+
 export default {
   name: 'MenuCreate',
   data () {
@@ -54,13 +64,27 @@ export default {
         icon: '',
         orderNum: 0,
         description: '',
-        shown: false
-      }
+        shown: true
+      },
+      // 存储上级菜单数据
+      parentMenuList: []
     }
+  },
+  created () {
+    // 获取菜单列表
+    this.loadMenuInfo()
   },
   methods: {
     onSubmit () {
       console.log('submit!')
+    },
+    async loadMenuInfo () {
+      console.log(getEditMenuInfo())
+      const { data } = await getEditMenuInfo()
+      console.log(data)
+      if (data.code === '000000') {
+        this.parentMenuList = data.data.parentMenuList
+      }
     }
   }
 }
