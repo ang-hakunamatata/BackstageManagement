@@ -20,7 +20,7 @@ const routes = [
       {
         path: '',
         name: 'home',
-        component: () => import(/* webpackChunkName: 'home' */ '@/views/home/index.vue')
+        component: () => import(/* webpackChunkName: 'home' */ '@/views/home/index')
       },
       {
         path: '/course',
@@ -43,6 +43,11 @@ const routes = [
         path: '/menu/:id/edit',
         name: 'menu-edit',
         component: () => import(/* webpackChunkName: 'menu-edit' */'@/views/menu/edit')
+      },
+      {
+        path: '/resource',
+        name: 'resource',
+        component: () => import(/* webpackChunkName: 'resource' */'@/views/resource/index')
       }
     ]
   }
