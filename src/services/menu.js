@@ -28,3 +28,11 @@ export const getAllMenu = () => {
     url: '/boss/menu/getAll'
   })
 }
+
+// 删除选定菜单项
+export const deleteMenu = (id) => {
+  return request({
+    method: 'DELETE',
+    url: `/boss/menu/${id}`
+  })
+}
