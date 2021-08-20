@@ -4,7 +4,7 @@
     <div slot="header" class="clearfix">
         <el-button
          @click="$router.push({ name: 'menu-create' })"
-        >操作按钮</el-button>
+        >添加菜单</el-button>
     </div>
     <div>
       <el-table
@@ -64,7 +64,11 @@ export default {
     this.loadAllMenus()
   },
   methods: {
-    handleEdit () {},
+    handleEdit () {
+      this.$router.push({
+        name: 'menu-edit'
+      })
+    },
     handleDelete (rowData) {
       console.log(rowData)
       // 删除的确认提示

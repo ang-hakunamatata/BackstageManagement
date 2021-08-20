@@ -1,14 +1,14 @@
 <template>
-  <div class="menu-create">
-    <create-or-edit></create-or-edit>
-  </div>
+    <div class="menu-edit">
+        <create-or-edit :is-edit="true"></create-or-edit>
+    </div>
 </template>
 
 <script>
 import CreateOrEdit from './components/CreateOrEdit'
 
 export default {
-  name: 'MenuCreate',
+  name: 'MenuEdit',
   components: {
     CreateOrEdit
   }
