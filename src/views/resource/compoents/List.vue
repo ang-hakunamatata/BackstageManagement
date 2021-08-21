@@ -2,22 +2,24 @@
   <div class="resource-list">
       <el-card>
         <div slot="header" class="clearfix">
-          <el-form :inline="true" :model="formInline" class="demo-form-inline">
+          <!-- 使用 Form 组件：行内表单 -->
+          <el-form :inline="true" :model="form" class="demo-form-inline">
             <el-form-item label="审批人">
-                <el-input v-model="formInline.user" placeholder="审批人"></el-input>
+                <el-input v-model="form.user" placeholder="审批人"></el-input>
             </el-form-item>
             <el-form-item label="活动区域">
-                <el-select v-model="formInline.region" placeholder="活动区域">
+                <el-select v-model="form.region" placeholder="活动区域">
                 <el-option label="区域一" value="shanghai"></el-option>
                 <el-option label="区域二" value="beijing"></el-option>
                 </el-select>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="onSubmit">查询</el-button>
+                <el-button type="primary">查询</el-button>
             </el-form-item>
             </el-form>
         </div>
         <div>
+          <!-- 使用Table组件 -->
         <el-table
            :data="resourceList"
            style="width: 100%">
@@ -44,7 +46,9 @@
                 <span>{{ scope.row.createdTime | dateFormat }}</span>
                </template>
            </el-table-column>
-           <el-table-column label="操作">
+           <el-table-column
+             label="操作"
+             width="150px">
              <template slot-scope="scope">
                <el-button
                  size="mini"
@@ -59,6 +63,16 @@
            </el-table-column>
         </el-table>
         </div>
+          <!-- 分页组件结构 -->
+        <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="form.data"
+          :page-sizes="[10, 15, 20, 30]"
+          :page-size="form.size"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="totalCount">
+        </el-pagination>
       </el-card>
   </div>
 </template>
@@ -70,12 +84,16 @@ export default {
   name: 'ResourceList',
   data () {
     return {
-      formInline: {
-        user: '',
-        region: ''
-      },
       // 资源列表信息
-      resourceList: []
+      resourceList: [],
+      form: {
+        // 当前页码
+        current: 1,
+        // 页面个数
+        size: 10
+      },
+      // 总个数
+      totalCount: 0
     }
   },
   created () {
@@ -83,12 +101,26 @@ export default {
     this.loadRescourcePages()
   },
   methods: {
+    handleSizeChange (val) {
+      this.form.size = val
+      // 由于修改了每页显示的条数，应当将页数还原为默认值 1
+      this.form.current = 1
+      this.loadRescourcePages()
+    },
+    handleCurrentChange (val) {
+      this.form.current = val
+      this.loadRescourcePages()
+    },
     async loadRescourcePages () {
-      const { data } = await getResourcePages({})
-      console.log(data)
-      console.log(data.data.records)
+      const { data } = await getResourcePages({
+        current: this.form.current,
+        size: this.form.size
+      })
+      // console.log(data)
+      // console.log(data.data.records)
       if (data.code === '000000') {
         this.resourceList = data.data.records
+        this.totalCount = data.data.total
       }
     },
     handleEdit () {},
