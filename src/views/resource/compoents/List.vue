@@ -3,15 +3,34 @@
       <el-card>
         <div slot="header" class="clearfix">
           <!-- 使用 Form 组件：行内表单 -->
-          <el-form :inline="true" :model="form" class="demo-form-inline">
-            <el-form-item label="资源名称">
-                <el-input v-model="form.name" placeholder="资源名称"></el-input>
+          <el-form
+            :inline="true"
+            :model="form"
+            class="demo-form-inline"
+            ref="form" >
+            <el-form-item
+              label="资源名称"
+              prop="name">
+                <el-input
+                  clearable
+                  v-model="form.name"
+                  placeholder="资源名称"></el-input>
             </el-form-item>
-            <el-form-item label="资源路径">
-                <el-input v-model="form.url" placeholder="资源路径"></el-input>
+            <el-form-item
+              label="资源路径"
+              prop="url">
+                <el-input
+                  clearable
+                  v-model="form.url"
+                  placeholder="资源路径"></el-input>
             </el-form-item>
-            <el-form-item label="资源分类">
-                <el-select v-model="form.categoryId" placeholder="资源分类">
+            <el-form-item
+              label="资源分类"
+              prop="categoryId">
+                <el-select
+                  clearable
+                  v-model="form.categoryId"
+                  placeholder="资源分类">
                   <el-option
                    v-for="item in resourceCategories"
                    :key="item.id"
@@ -23,6 +42,7 @@
                 </el-select>
             </el-form-item>
             <el-form-item>
+                <el-button @click="onReset">重置</el-button>
                 <el-button type="primary" @click="onSubmit">查询</el-button>
             </el-form-item>
             </el-form>
@@ -120,6 +140,9 @@ export default {
     this.loadRescourceCategories()
   },
   methods: {
+    onReset () {
+      this.$refs.form.resetFields()
+    },
     onSubmit () {
       // 更新后将页数置为 1
       this.form.current = 1
