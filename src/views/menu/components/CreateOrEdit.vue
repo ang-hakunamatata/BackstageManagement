@@ -37,7 +37,7 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item label="排序">
-        <el-input-number v-model="form.date1" label="描述文字"></el-input-number>
+        <el-input-number v-model="form.orderNum" label="描述文字"></el-input-number>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit">提交</el-button>
@@ -72,7 +72,7 @@ export default {
         icon: '',
         orderNum: 0,
         description: '',
-        shown: true
+        shown: false
       },
       // 存储上级菜单数据
       parentMenuList: []
@@ -93,11 +93,24 @@ export default {
       }
     },
     async loadMenuInfo () {
-      // console.log(getEditMenuInfo())
-      const { data } = await getEditMenuInfo()
-      // console.log(data)
+      // // console.log(getEditMenuInfo())
+      // const { data } = await getEditMenuInfo()
+      // // console.log(data)
+      // if (data.code === '000000') {
+      //   this.parentMenuList = data.data.parentMenuList
+      // }
+      // console.log(this.$route.params.id)
+      // 检测是否存在路由参数 id, 并进行对应处理
+      const id = this.$route.params.id || -1
+      // 请求菜单数据（上级菜单数据）
+      const { data } = await getEditMenuInfo(id)
       if (data.code === '000000') {
+        // 将上级菜单数据保存，进行数据绑定
         this.parentMenuList = data.data.parentMenuList
+        // 检测是否存在菜单数据 menuInfo，如果存在，更新给 form 即可
+        if (data.data.menuInfo) {
+          this.form = data.data.menuInfo
+        }
       }
     }
   }
