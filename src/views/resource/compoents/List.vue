@@ -7,7 +7,8 @@
             :inline="true"
             :model="form"
             class="demo-form-inline"
-            ref="form" >
+            ref="form"
+            :disabled="isLoading">
             <el-form-item
               label="资源名称"
               prop="name">
@@ -51,7 +52,8 @@
           <!-- 使用Table组件 -->
         <el-table
            :data="resourceList"
-           style="width: 100%">
+           style="width: 100%"
+           v-loading="isLoading">
            <el-table-column
              type="index"
              label="编号"
@@ -100,7 +102,8 @@
           :page-sizes="[10, 15, 20, 30]"
           :page-size="form.size"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="totalCount">
+          :total="totalCount"
+          :disabled="isLoading">
         </el-pagination>
       </el-card>
   </div>
@@ -130,7 +133,9 @@ export default {
       // 总个数
       totalCount: 0,
       // 存储资源分类信息
-      resourceCategories: []
+      resourceCategories: [],
+      // 是否加载数据
+      isLoading: false
     }
   },
   created () {
@@ -150,7 +155,7 @@ export default {
     },
     async loadRescourceCategories () {
       const { data } = await getResourceCategories()
-      console.log(data.data)
+      // console.log(data.data)
       if (data.code === '000000') {
         this.resourceCategories = data.data
       }
@@ -166,12 +171,16 @@ export default {
       this.loadRescourcePages()
     },
     async loadRescourcePages () {
+      // 数据加载中，禁止点击
+      this.isLoading = true
       const { data } = await getResourcePages(this.form)
       // console.log(data)
       // console.log(data.data.records)
       if (data.code === '000000') {
         this.resourceList = data.data.records
         this.totalCount = data.data.total
+        // 数据加载完毕，释放点击功能
+        this.isLoading = false
       }
     },
     handleEdit () {},
