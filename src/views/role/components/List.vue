@@ -48,23 +48,24 @@
             <template slot-scope="scope">
                 <div>
                 <el-button
-                    type="text">
-                    分配菜单
+                  type="text">
+                  分配菜单
                 </el-button>
                 <el-button
-                    type="text">
-                    分配资源
+                  type="text">
+                  分配资源
                 </el-button>
                 </div>
                 <div>
                 <el-button
-                    type="text">
-                    编辑
+                  type="text"
+                  @click="handleEdit(scope.row)">
+                  编辑
                 </el-button>
                 <el-button
-                    type="text"
-                    @click="handleDelete(scope.row)">
-                    删除
+                  type="text"
+                  @click="handleDelete(scope.row)">
+                  删除
                 </el-button>
                 </div>
             </template>
@@ -77,7 +78,9 @@
           width="30%">
           <!-- <create-or-edit></create-or-edit> -->
            <!-- 将添加与编辑功能单独封装到组件中 -->
-          <create-or-edit></create-or-edit>
+          <create-or-edit
+            @success="handelSuccess"
+          ></create-or-edit>
         </el-dialog>
       </el-card>
       </div>
@@ -100,13 +103,20 @@ export default {
       },
       roles: [],
       isLoading: false,
-      dialogVisible: true
+      dialogVisible: false
     }
   },
   created () {
     this.getRolesList()
   },
   methods: {
+    handelSuccess () {
+      // 关闭提示框
+      this.dialogVisible = false
+      // 重新获取刷新tabel数据
+      this.getRolesList()
+    },
+    handleEdit () {},
     // 删除角色
     handleDelete (role) {
       this.$confirm(`是否清除角色：${role.name}？`, '删除提示')
@@ -125,6 +135,7 @@ export default {
           }
         })
     },
+    // 获取角色列表
     async getRolesList () {
       this.isLoading = true
       const { data } = await getRoles(this.form)
