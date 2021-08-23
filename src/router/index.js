@@ -48,6 +48,18 @@ const routes = [
         path: '/resource',
         name: 'resource',
         component: () => import(/* webpackChunkName: 'resource' */'@/views/resource/index')
+      },
+      {
+        path: '/role',
+        name: 'role',
+        component: () => import(/* webpackChunkName: 'role' */'@/views/role/index')
+      },
+      // 角色管理-分配菜单
+      {
+        path: '/role/:roleId/alloc-menu',
+        name: 'alloc-menu',
+        component: () => import(/* webpackChunkName: 'alloc-menu' */'@/views/role/alloc-menu'),
+        props: true
       }
     ]
   }

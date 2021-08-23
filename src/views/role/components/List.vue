@@ -48,6 +48,10 @@
             <template slot-scope="scope">
                 <div>
                 <el-button
+                  @click="$router.push({
+                    name: 'alloc-menu',
+                    params: { roleId: scope.row.id }
+                  })"
                   type="text">
                   分配菜单
                 </el-button>
