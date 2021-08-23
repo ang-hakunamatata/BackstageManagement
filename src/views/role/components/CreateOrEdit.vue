@@ -21,10 +21,12 @@
         ></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button>取 消</el-button>
+        <el-button
+          @click="onCancel"
+        >取 消</el-button>
         <el-button
           type="primary"
-          @click="addRole"
+          @click="onSubmit"
         >确 定</el-button>
       </el-form-item>
     </el-form>
@@ -32,10 +34,19 @@
 </template>
 
 <script>
-import { createOrUpdate } from '@/services/role.js'
+import { createOrUpdate, getRoleById } from '@/services/role.js'
 
 export default {
   name: 'CreateOrEdit',
+  props: {
+    isEdit: {
+      type: Boolean,
+      default: false
+    },
+    roleId: {
+      type: [Number, String]
+    }
+  },
   data () {
     return {
       roles: {
@@ -45,12 +56,21 @@ export default {
       }
     }
   },
-  // created () {
-  //   this.loadRoles()
-  // },
+  created () {
+    if (this.isEdit) {
+      this.loadRoles()
+    }
+  },
   methods: {
+    // 取消添加或编辑
+    onCancel () {
+      // 关闭提示框（需要子组件向父组件传递状态）
+      this.$emit('cancel')
+      // 清除表单内容
+      this.role = {}
+    },
     // 添加更新角色
-    async addRole () {
+    async onSubmit () {
       const { data } = await createOrUpdate(this.roles)
       if (data.code === '000000') {
         // 关闭提示框（需要子组件向父组件传递状态）
@@ -59,6 +79,14 @@ export default {
         this.$message.success('添加成功')
         // 清除表单内容
         this.role = {}
+      }
+    },
+    // 获取角色
+    async loadRoles () {
+      const { data } = await getRoleById(this.roleId)
+      console.log(data)
+      if (data.code === '000000') {
+        this.roles = data.data
       }
     }
   }

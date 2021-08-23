@@ -73,13 +73,16 @@
         </el-table>
         <!-- 添加角色的对话框结构 -->
         <el-dialog
-          title="提示"
+          :title="isEdit ? '编辑角色' : '添加角色'"
           :visible.sync="dialogVisible"
           width="30%">
           <!-- <create-or-edit></create-or-edit> -->
            <!-- 将添加与编辑功能单独封装到组件中 -->
           <create-or-edit
             @success="handelSuccess"
+            @cancel="handelCancel"
+            :role-id="roleId"
+            :is-edit="isEdit"
           ></create-or-edit>
         </el-dialog>
       </el-card>
@@ -103,20 +106,35 @@ export default {
       },
       roles: [],
       isLoading: false,
-      dialogVisible: false
+      dialogVisible: false,
+      // 是否为编辑角色
+      isEdit: false,
+      // 角色id
+      roleId: ''
     }
   },
   created () {
     this.getRolesList()
   },
   methods: {
+    // 点击取消操作
+    handelCancel () {
+      this.dialogVisible = false
+    },
+    // 点击确定操作
     handelSuccess () {
       // 关闭提示框
       this.dialogVisible = false
       // 重新获取刷新tabel数据
       this.getRolesList()
     },
-    handleEdit () {},
+    // 编辑角色
+    handleEdit (role) {
+      this.isEdit = true
+      // 显示对话框
+      this.dialogVisible = true
+      this.roleId = role.id
+    },
     // 删除角色
     handleDelete (role) {
       this.$confirm(`是否清除角色：${role.name}？`, '删除提示')
